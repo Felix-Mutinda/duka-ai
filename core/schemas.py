@@ -208,3 +208,20 @@ class Payment(BaseModel):
             msg = "order_id must start with DKA-"
             raise ValueError(msg)
         return normalized
+
+
+class PolicyDocument(BaseModel):
+    """A policy document loaded from the fixture knowledge base."""
+
+    source: str
+    title: str
+    body: str
+
+    @field_validator("body")
+    @classmethod
+    def body_not_empty(cls, value: str) -> str:
+        """Policy documents must not be empty."""
+        if not value.strip():
+            msg = "Policy document body must not be empty."
+            raise ValueError(msg)
+        return value

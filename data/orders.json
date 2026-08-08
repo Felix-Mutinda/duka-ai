@@ -1,0 +1,22 @@
+[
+  {
+    "order_id": "DKA-1042",
+    "status": "out_for_delivery",
+    "estimated_delivery": "2026-06-18",
+    "items": [
+      "PRD-001"
+    ],
+    "delivery_area": "Nairobi CBD",
+    "payment_status": "paid"
+  },
+  {
+    "order_id": "DKA-1043",
+    "status": "pending_payment_review",
+    "estimated_delivery": null,
+    "items": [
+      "PRD-002"
+    ],
+    "delivery_area": "Kilimani",
+    "payment_status": "pending_review"
+  }
+]
