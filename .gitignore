@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Ruff
+.ruff_cache/
+
+# Environment
+.env
+.env.local
+
+# Editor
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# uv
+# Do not ignore uv.lock. Commit it.
