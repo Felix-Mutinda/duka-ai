@@ -1,0 +1,13 @@
+app:
+  mode: guarded
+  llm_mode: mock
+  max_response_chars: 300
+
+demo:
+  shop_name: "Demo Electronics Duka"
+  channel: "whatsapp_sim"
+
+guardrails:
+  redact_pii: true
+  block_discount_promises: true
+  block_policy_override: true
