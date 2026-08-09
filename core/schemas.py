@@ -48,6 +48,7 @@ class Intent(StrEnum):
     PAYMENT_STATUS = "payment_status"
     POLICY = "policy"
     FRAUD_OR_DISPUTE = "fraud_or_dispute"
+    GREETING = "greeting"
     OUT_OF_SCOPE = "out_of_scope"
     UNCLEAR = "unclear"
     INJECTION_ATTEMPT = "injection_attempt"

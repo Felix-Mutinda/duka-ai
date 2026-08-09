@@ -19,6 +19,7 @@ def build_owner_report(state: dict[str, Any]) -> dict[str, Any]:
         "input_redacted": redact_text(str(state.get("input_text", ""))),
         "final_action": str(state.get("final_action", "")),
         "final_response_redacted": redact_text(str(state.get("final_response", ""))),
+        "composer_mode": str(state.get("composer_mode", "")),
         "payment_requires_human_review": bool(state.get("payment_requires_human_review", False)),
         "gate": redact_structure(state.get("gate", {})),
         "route": redact_structure(state.get("route", {})),
@@ -48,6 +49,7 @@ def summarize_report(report: dict[str, Any]) -> dict[str, Any]:
         "payment_requires_human_review": bool(report.get("payment_requires_human_review", False)),
         "tool_result_count": len(report.get("tool_results", [])),
         "retrieved_chunk_count": len(report.get("retrieved_chunks", [])),
+        "composer_mode": report.get("composer_mode"),
         "nodes": nodes,
     }
 
@@ -65,6 +67,7 @@ def render_owner_markdown(report: dict[str, Any]) -> str:
     lines.append(f"Final action: `{summary.get('final_action')}`")
     lines.append(f"Blocked: `{summary.get('blocked')}`")
     lines.append(f"Escalated: `{summary.get('escalated')}`")
+    lines.append(f"Composer mode: `{summary.get('composer_mode')}`")
     lines.append(f"Payment review required: `{summary.get('payment_requires_human_review')}`")
     lines.append("")
 

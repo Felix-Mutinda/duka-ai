@@ -9,6 +9,11 @@ from tools.registry import call_tool
 
 from core.config import load_app_config
 from core.guardrails import evaluate_input, evaluate_output, redact_text
+from core.llm.live import (
+    LiveComposerError,
+    live_compose,
+    should_use_live_composer,
+)
 from core.pipeline.router import ORDER_ID_REGEX, mock_route
 from core.pipeline.tracing import trace_event
 from core.schemas import (
@@ -29,6 +34,10 @@ FALLBACK_ESCALATION = "This needs review by the store team. I have flagged it fo
 FALLBACK_PAYMENT_REVIEW = "This payment needs review by the store team. I cannot confirm it yet."
 
 FALLBACK_CLARIFY = "Can you clarify if this is about an order, product, payment, or policy?"
+
+FALLBACK_GREETING = "Hello! I can help with orders, products, payments, and store policies."
+
+FALLBACK_COMPOSER = "I can help with orders, products, payments, and store policies."
 
 PAYMENT_REFERENCE_REGEX = re.compile(r"\b(?=[A-Z0-9]*\d)[A-Z0-9]{8,16}\b")
 
@@ -317,16 +326,59 @@ def compose_response(state: dict[str, Any]) -> dict[str, Any]:
         return {
             "draft_response": FALLBACK_CLARIFY,
             "final_action": ActionType.RESPOND.value,
+            "composer_mode": "mock",
             "trace": [
                 trace_event(
                     state,
                     "compose_response",
                     "No route available. Asking for clarification.",
+                    composer_mode="mock",
                 )
             ],
         }
 
     route = RouteDecision.model_validate(route_data)
+
+    composer_mode = "mock"
+    draft_response = ""
+
+    if should_use_live_composer():
+        try:
+            draft_response = live_compose(state)
+            composer_mode = "live"
+        except LiveComposerError:
+            composer_mode = "mock_fallback"
+        except Exception:
+            composer_mode = "mock_fallback"
+
+    if not draft_response:
+        draft_response = _mock_compose(state, route)
+
+        if composer_mode != "live":
+            composer_mode = "mock_fallback" if composer_mode == "mock_fallback" else "mock"
+
+    if not draft_response:
+        draft_response = FALLBACK_COMPOSER
+        composer_mode = "mock_fallback"
+
+    return {
+        "draft_response": draft_response,
+        "final_action": ActionType.RESPOND.value,
+        "composer_mode": composer_mode,
+        "trace": [
+            trace_event(
+                state,
+                "compose_response",
+                "Draft response composed.",
+                intent=route.intent.value,
+                composer_mode=composer_mode,
+            )
+        ],
+    }
+
+
+def _mock_compose(state: dict[str, Any], route: RouteDecision) -> str:
+    """Deterministic mock composer used as the fallback baseline."""
     normalized_text = state.get("normalized_text", "")
     tool_results = state.get("tool_results", [])
 
@@ -335,30 +387,22 @@ def compose_response(state: dict[str, Any]) -> dict[str, Any]:
         Intent.INVENTORY,
         Intent.PAYMENT_STATUS,
     }:
-        draft_response = _compose_from_tool_results(
+        return _compose_from_tool_results(
             route,
             tool_results,
             normalized_text,
         )
-    elif route.intent == Intent.POLICY:
-        draft_response = _compose_policy_response(state)
-    elif route.intent == Intent.FRAUD_OR_DISPUTE:
-        draft_response = FALLBACK_ESCALATION
-    else:
-        draft_response = FALLBACK_CLARIFY
 
-    return {
-        "draft_response": draft_response,
-        "final_action": ActionType.RESPOND.value,
-        "trace": [
-            trace_event(
-                state,
-                "compose_response",
-                "Draft response composed.",
-                intent=route.intent.value,
-            )
-        ],
-    }
+    if route.intent == Intent.POLICY:
+        return _compose_policy_response(state)
+
+    if route.intent == Intent.GREETING:
+        return FALLBACK_GREETING
+
+    if route.intent == Intent.FRAUD_OR_DISPUTE:
+        return FALLBACK_ESCALATION
+
+    return FALLBACK_CLARIFY
 
 
 def apply_output_guard(state: dict[str, Any]) -> dict[str, Any]:

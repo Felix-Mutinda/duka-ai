@@ -16,6 +16,14 @@ from core.schemas import (
     RouteDecision,
 )
 
+GREETING_REGEX = re.compile(
+    r"\b("
+    r"hello|hi|hey|habari|jambo|sasa|mambo|vipi|"
+    r"good morning|good afternoon|good evening"
+    r")\b",
+    re.IGNORECASE,
+)
+
 ORDER_ID_REGEX = re.compile(r"\bDKA-\d{4,}\b", re.IGNORECASE)
 
 ORDER_KEYWORDS = (
@@ -113,6 +121,14 @@ def mock_route(text: str, gate: GateDecision) -> RouteDecision:
             risk_level=RiskLevel.LOW,
             requires_retrieval=True,
             reason="policy_keywords",
+        )
+
+    if GREETING_REGEX.search(text):
+        return RouteDecision(
+            intent=Intent.GREETING,
+            confidence=Confidence.MEDIUM,
+            risk_level=RiskLevel.LOW,
+            reason="greeting",
         )
 
     return RouteDecision(

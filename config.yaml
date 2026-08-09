@@ -1,6 +1,12 @@
 app:
   mode: guarded
-  llm_mode: mock
+  llm_mode: auto
+  llm_provider: openai_compatible
+  llm_model: google/gemma-4-26b-a4b-it:free
+  llm_base_url: "https://openrouter.ai/api/v1"
+  llm_timeout_seconds: 5.0
+  llm_max_tokens: 220
+  llm_temperature: 0.0
   max_response_chars: 300
 
 demo:

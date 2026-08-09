@@ -48,9 +48,25 @@ def test_fraud_report_escalates() -> None:
     assert result["final_response"]
 
 
+def test_greeting_query_responds_with_greeting() -> None:
+    """A greeting should receive a helpful greeting."""
+    result = run_pipeline("Hello there.")
+
+    assert result["final_action"] == "respond"
+    assert "hello" in result["final_response"].lower()
+
+
+def test_swahili_greeting_query_responds_with_greeting() -> None:
+    """A Swahili greeting should also route to greeting."""
+    result = run_pipeline("Habari yako?")
+
+    assert result["final_action"] == "respond"
+    assert "hello" in result["final_response"].lower()
+
+
 def test_unclear_query_requests_clarification() -> None:
     """An unclear query should ask for clarification."""
-    result = run_pipeline("Hello there.")
+    result = run_pipeline("Hmm.")
 
     assert result["final_action"] == "respond"
     assert "clarify" in result["final_response"].lower()
