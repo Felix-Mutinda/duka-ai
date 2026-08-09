@@ -43,7 +43,7 @@ ci:
 	$(UV) run pytest
 
 demo:
-	@echo "Demo app is wired in Phase 7."
+	$(UV) run python app.py
 
 trace-demo:
 	$(UV) run python -m observability.export_demo

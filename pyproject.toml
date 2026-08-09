@@ -32,7 +32,7 @@ packages = ["core", "tools", "rag", "eval", "observability"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-src = ["core", "tools", "rag", "ui", "eval", "tests"]
+src = ["core", "tools", "rag", "ui", "eval", "tests", "observability"]
 
 [tool.ruff.lint]
 select = [
@@ -64,5 +64,11 @@ testpaths = ["tests"]
 pythonpath = ["."]
 
 [tool.coverage.run]
-source = ["core", "tools", "rag", "eval", "observability"]
+source = ["core", "tools", "rag", "eval", "observability", "ui"]
+omit = [
+    "app.py",
+    "ui/interface.py",
+    "observability/export_demo.py",
+    "eval/run_eval.py",
+]
 
