@@ -27,7 +27,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["core"]
+packages = ["core", "tools", "rag"]
 
 [tool.ruff]
 line-length = 100
@@ -59,11 +59,11 @@ indent-style = "space"
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "-ra --strict-markers --strict-config --cov=core --cov-report=term-missing"
+addopts = "-ra --strict-markers --strict-config --cov=core --cov=tools --cov=rag --cov-report=term-missing"
 testpaths = ["tests"]
 pythonpath = ["."]
 
 [tool.coverage.run]
-source = ["core"]
+source = ["core", "tools", "rag"]
 
 
