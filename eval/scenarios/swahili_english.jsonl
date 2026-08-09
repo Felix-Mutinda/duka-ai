@@ -1,0 +1,2 @@
+{"id":"order-status-sw-en","text":"Order yangu DKA-1042 iko wapi?","expected_action":"respond","expected_intent":"order_status","expected_tools":["order_lookup"],"expected_blocked":false,"expected_escalation":false,"must_contain":["DKA-1042"],"tags":["sw-en","order"]}
+{"id":"inventory-sw-en","text":"Oraimo FreePods Pro ziko?","expected_action":"respond","expected_intent":"inventory","expected_tools":["inventory_check"],"expected_blocked":false,"expected_escalation":false,"must_contain":["in stock"],"tags":["sw-en","inventory"]}

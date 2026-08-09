@@ -28,6 +28,9 @@ fix:
 format:
 	$(UV) run ruff format .
 
+eval:
+	$(UV) run python -m eval.run_eval
+
 test:
 	$(UV) run pytest
 
