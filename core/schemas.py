@@ -7,7 +7,7 @@ between fixtures, tools, guardrails, pipeline state, and observability.
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 from uuid import uuid4
 
@@ -24,7 +24,7 @@ def new_id(prefix: str) -> str:
     return f"{prefix}_{uuid4().hex[:12]}"
 
 
-class RiskLevel(str, Enum):
+class RiskLevel(StrEnum):
     """Risk level used by routing and guardrails."""
 
     LOW = "low"
@@ -32,7 +32,7 @@ class RiskLevel(str, Enum):
     HIGH = "high"
 
 
-class Confidence(str, Enum):
+class Confidence(StrEnum):
     """Confidence bucket for routing decisions."""
 
     LOW = "low"
@@ -40,7 +40,7 @@ class Confidence(str, Enum):
     HIGH = "high"
 
 
-class Intent(str, Enum):
+class Intent(StrEnum):
     """Supported MVP intents."""
 
     ORDER_STATUS = "order_status"
@@ -53,7 +53,7 @@ class Intent(str, Enum):
     INJECTION_ATTEMPT = "injection_attempt"
 
 
-class ActionType(str, Enum):
+class ActionType(StrEnum):
     """Final action taken by the pipeline."""
 
     RESPOND = "respond"
