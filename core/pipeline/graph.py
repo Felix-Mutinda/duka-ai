@@ -11,8 +11,10 @@ from core.pipeline.nodes import (
     apply_output_guard,
     compose_response,
     escalate,
+    execute_tools,
     finalize,
     normalize_input,
+    plan_tool_call,
     route_intent,
 )
 from core.pipeline.state import PipelineState
@@ -27,6 +29,8 @@ def build_graph() -> Any:
     builder.add_node("apply_input_gate", apply_input_gate)
     builder.add_node("route_intent", route_intent)
     builder.add_node("escalate", escalate)
+    builder.add_node("plan_tool_call", plan_tool_call)
+    builder.add_node("execute_tools", execute_tools)
     builder.add_node("compose_response", compose_response)
     builder.add_node("apply_output_guard", apply_output_guard)
     builder.add_node("finalize", finalize)
@@ -48,6 +52,18 @@ def build_graph() -> Any:
         _after_route,
         {
             "escalate": "escalate",
+            "plan_tool_call": "plan_tool_call",
+            "compose_response": "compose_response",
+        },
+    )
+
+    builder.add_edge("plan_tool_call", "execute_tools")
+
+    builder.add_conditional_edges(
+        "execute_tools",
+        _after_tools,
+        {
+            "apply_output_guard": "apply_output_guard",
             "compose_response": "compose_response",
         },
     )
@@ -71,8 +87,11 @@ def run_pipeline(input_text: str, session_id: str | None = None) -> dict[str, An
         "normalized_text": "",
         "gate": {},
         "route": {},
-        "retrieved_texts": [],
+        "tool_requests": [],
         "tool_results": [],
+        "retrieved_texts": [],
+        "retrieved_chunks": [],
+        "payment_requires_human_review": False,
         "escalation": {},
         "draft_response": "",
         "output_guard": {},
@@ -95,10 +114,21 @@ def _after_input_gate(state: dict[str, Any]) -> str:
 
 
 def _after_route(state: dict[str, Any]) -> str:
-    """Decide whether to escalate or compose a normal response."""
+    """Decide whether to escalate, use tools, or compose directly."""
     route = state.get("route") or {}
 
     if route.get("requires_escalation"):
         return "escalate"
+
+    if route.get("requires_tool") or route.get("requires_retrieval"):
+        return "plan_tool_call"
+
+    return "compose_response"
+
+
+def _after_tools(state: dict[str, Any]) -> str:
+    """Decide whether tool execution produced an escalation."""
+    if state.get("final_action") == "escalate":
+        return "apply_output_guard"
 
     return "compose_response"

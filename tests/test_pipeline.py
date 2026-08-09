@@ -77,3 +77,52 @@ def test_output_guard_blocks_unsafe_draft() -> None:
 
     assert update["final_action"] == "block"
     assert "0712345678" not in update["final_response"]
+
+
+def test_inventory_query_in_stock() -> None:
+    """Inventory queries should use the inventory tool."""
+    result = run_pipeline("Do you have Oraimo FreePods Pro in stock?")
+
+    assert result["final_action"] == "respond"
+    assert "in stock" in result["final_response"].lower()
+
+
+def test_inventory_query_out_of_stock() -> None:
+    """Out-of-stock inventory queries should say so."""
+    result = run_pipeline("Is Anker PowerBank available?")
+
+    assert result["final_action"] == "respond"
+    assert "out of stock" in result["final_response"].lower()
+
+
+def test_payment_with_pending_reference_escalates() -> None:
+    """Pending M-Pesa payments should escalate."""
+    result = run_pipeline("I paid na M-Pesa but my order is still pending. Reference QGH7XKLM21.")
+
+    assert result["final_action"] == "escalate"
+    assert result["escalation"]
+    assert "payment" in result["final_response"].lower()
+
+
+def test_payment_without_reference_asks_for_reference() -> None:
+    """Payment queries without a reference should ask for one."""
+    result = run_pipeline("I paid na M-Pesa but my order is still pending.")
+
+    assert result["final_action"] == "respond"
+    assert "reference" in result["final_response"].lower()
+
+
+def test_policy_query_uses_retrieved_policy() -> None:
+    """Policy queries should answer using retrieved policy text."""
+    result = run_pipeline("Can I return a power bank after 10 days?")
+
+    assert result["final_action"] == "respond"
+    assert "7 days" in result["final_response"]
+
+
+def test_unknown_order_query_responds_not_found() -> None:
+    """Unknown order IDs should produce a safe not-found response."""
+    result = run_pipeline("Where is order DKA-9999?")
+
+    assert result["final_action"] == "respond"
+    assert "could not find" in result["final_response"].lower()

@@ -15,8 +15,11 @@ class PipelineState(TypedDict):
     normalized_text: str
     gate: dict[str, Any]
     route: dict[str, Any]
-    retrieved_texts: list[str]
+    tool_requests: list[dict[str, Any]]
     tool_results: list[dict[str, Any]]
+    retrieved_texts: list[str]
+    retrieved_chunks: list[dict[str, Any]]
+    payment_requires_human_review: bool
     escalation: dict[str, Any]
     draft_response: str
     output_guard: dict[str, Any]
