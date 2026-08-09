@@ -2,17 +2,6 @@
 
 ![Duka AI hero](assets/duka-ai-hero.png)
 
-<!-- IMAGE_PLACEHOLDER
-Duka AI hero image:
-- Background: lighter brand color #0D2C3D
-- Central visual: glowing LangGraph state graph with guarded pipeline nodes
-- Node labels suggested: input gate, router, tools, retrieval, output guard, escalation, observability
-- Mascot: Richie Mini, a small friendly chatbot mascot, near the graph
-- Mood: engineering artifact, calm, precise, trustworthy, not cartoonishly loud
-- Style: clean technical illustration, subtle glow, high contrast, no stock imagery
-- Avoid: real logos, celebrity faces, clutter, misleading production claims
--->
-
 Duka AI is a simulated, guardrail-first customer-support assistant for a fictional Nairobi electronics shop.
 
 The purpose of this project is not to ship a production chatbot. The purpose is to demonstrate what a responsible business assistant pipeline looks like when guardrails, routing, retrieval, tools, escalation, and observability are treated as first-class engineering concerns.
