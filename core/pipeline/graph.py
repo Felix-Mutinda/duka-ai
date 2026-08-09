@@ -97,6 +97,7 @@ def run_pipeline(input_text: str, session_id: str | None = None) -> dict[str, An
         "output_guard": {},
         "final_response": "",
         "final_action": "",
+        "composer_mode": "",
         "trace": [],
     }
 

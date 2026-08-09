@@ -4,7 +4,7 @@ from core.config import get_app_settings, load_app_config
 
 
 def test_app_settings_defaults(monkeypatch) -> None:
-    """Default runtime settings should be guarded and mock."""
+    """Default runtime settings should be guarded and auto."""
     monkeypatch.delenv("DUKA_MODE", raising=False)
     monkeypatch.delenv("DUKA_LLM_MODE", raising=False)
     monkeypatch.delenv("DUKA_MAX_RESPONSE_CHARS", raising=False)
@@ -13,7 +13,7 @@ def test_app_settings_defaults(monkeypatch) -> None:
     settings = get_app_settings()
 
     assert settings.mode == "guarded"
-    assert settings.llm_mode == "mock"
+    assert settings.llm_mode == "auto"
     assert settings.max_response_chars == 300
 
 
@@ -25,6 +25,6 @@ def test_load_missing_config_returns_defaults() -> None:
     config = load_app_config("does-not-exist.yaml")
 
     assert config.app.mode == "guarded"
-    assert config.app.llm_mode == "mock"
+    assert config.app.llm_mode == "auto"
     assert config.demo.shop_name == "Demo Electronics Duka"
     assert config.guardrails.redact_pii is True

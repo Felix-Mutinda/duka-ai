@@ -17,7 +17,7 @@ class AppSettings(BaseSettings):
     Environment variables are prefixed with DUKA_.
     Example:
         DUKA_MODE=guarded
-        DUKA_LLM_MODE=mock
+        DUKA_LLM_MODE=auto
     """
 
     model_config = SettingsConfigDict(
@@ -27,7 +27,13 @@ class AppSettings(BaseSettings):
     )
 
     mode: Literal["guarded", "naive"] = "guarded"
-    llm_mode: Literal["mock", "live"] = "mock"
+    llm_mode: Literal["mock", "live", "auto"] = "auto"
+    llm_provider: Literal["mock", "openai_compatible"] = "openai_compatible"
+    llm_model: str = "gpt-4o-mini"
+    llm_base_url: str = "https://api.openai.com/v1"
+    llm_timeout_seconds: float = Field(default=5.0, gt=0)
+    llm_max_tokens: int = Field(default=220, gt=0)
+    llm_temperature: float = Field(default=0.0, ge=0.0, le=2.0)
     max_response_chars: int = Field(default=300, gt=0)
 
 

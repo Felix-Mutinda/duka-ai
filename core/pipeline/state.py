@@ -25,4 +25,5 @@ class PipelineState(TypedDict):
     output_guard: dict[str, Any]
     final_response: str
     final_action: str
+    composer_mode: str
     trace: Annotated[list[dict[str, Any]], operator.add]
