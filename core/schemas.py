@@ -124,6 +124,13 @@ class OutputGuardDecision(BaseModel):
     fallback_response: str | None = None
 
 
+class OutputGuardContext(BaseModel):
+    """Context supplied to the output guard."""
+
+    retrieved_texts: list[str] = Field(default_factory=list)
+    payment_requires_human_review: bool = False
+
+
 class Escalation(BaseModel):
     """Escalation payload for human review."""
 
