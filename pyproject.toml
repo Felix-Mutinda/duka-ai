@@ -27,12 +27,12 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["core", "tools", "rag"]
+packages = ["core", "tools", "rag", "eval", "observability"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-src = ["core", "tools", "rag", "ui", "eval", "tests"]
+src = ["core", "tools", "rag", "ui", "eval", "tests", "observability"]
 
 [tool.ruff.lint]
 select = [
@@ -59,11 +59,16 @@ indent-style = "space"
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "-ra --strict-markers --strict-config --cov=core --cov=tools --cov=rag --cov-report=term-missing"
+addopts = "-ra --strict-markers --strict-config --cov=core --cov=tools --cov=rag --cov=eval --cov=observability --cov-report=term-missing"
 testpaths = ["tests"]
 pythonpath = ["."]
 
 [tool.coverage.run]
-source = ["core", "tools", "rag"]
-
+source = ["core", "tools", "rag", "eval", "observability", "ui"]
+omit = [
+    "app.py",
+    "ui/interface.py",
+    "observability/export_demo.py",
+    "eval/run_eval.py",
+]
 

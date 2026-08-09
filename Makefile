@@ -28,6 +28,9 @@ fix:
 format:
 	$(UV) run ruff format .
 
+eval:
+	$(UV) run python -m eval.run_eval
+
 test:
 	$(UV) run pytest
 
@@ -40,4 +43,7 @@ ci:
 	$(UV) run pytest
 
 demo:
-	@echo "Demo app is wired in Phase 7."
+	$(UV) run python app.py
+
+trace-demo:
+	$(UV) run python -m observability.export_demo

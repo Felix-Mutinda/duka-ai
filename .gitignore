@@ -33,3 +33,6 @@ coverage.xml
 
 # uv
 # Do not ignore uv.lock. Commit it.
+
+# Local trace artifacts
+var/

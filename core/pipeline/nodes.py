@@ -202,7 +202,7 @@ def plan_tool_call(state: dict[str, Any]) -> dict[str, Any]:
         requests.append(
             ToolCall(
                 name="knowledge_base_search",
-                args={"query": text, "top_k": 3},
+                args={"query": text, "top_k": 5},
             )
         )
 
@@ -535,19 +535,29 @@ def _compose_policy_response(state: dict[str, Any]) -> str:
     if not retrieved_chunks:
         return "I could not find a policy for that."
 
-    first_chunk = retrieved_chunks[0]
-    text = str(first_chunk.get("text", "")).strip()
-    text = " ".join(text.split())
+    texts: list[str] = []
+    seen: set[str] = set()
 
-    if not text:
+    for chunk in retrieved_chunks:
+        text = str(chunk.get("text", "")).strip()
+        text = " ".join(text.split())
+
+        if not text or text in seen:
+            continue
+
+        seen.add(text)
+        texts.append(text)
+
+    if not texts:
         return "I could not find a policy for that."
 
+    combined = " ".join(texts)
     max_chars = load_app_config().app.max_response_chars
 
-    if len(text) > max_chars:
-        text = text[: max_chars - 3].rstrip() + "..."
+    if len(combined) > max_chars:
+        combined = combined[: max_chars - 3].rstrip() + "..."
 
-    return text
+    return combined
 
 
 def _first_tool_result(
