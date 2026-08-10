@@ -8,6 +8,7 @@ The purpose of this project is not to ship a production chatbot. The purpose is 
 
 > Duka is Swahili for shop.
 
+![Duka AI RAG Scenario](assets/scenario-4.png)
 ---
 
 ## Status
